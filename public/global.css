@@ -1,0 +1,36 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+html, body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	box-sizing: border-box;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+:root {
+	--bg-main: rgb(40, 60, 115);
+	--border-main: rgb(20, 25, 55);
+
+	--bg-secondary: rgb(210, 100, 20);
+	--border-secondary: rgb(180, 80, 21);
+
+	--bg-card: rgb(200, 210, 225);
+
+	--bg-input: rgb(220, 220, 220);
+
+	--bg-btn-primary: rgb(210, 100, 20);
+	--border-btn-primary: rgb(180, 80, 21);
+	--color-btn-primary: white;
+	
+	--bg-btn-primary-hover: rgb(209, 113, 44);
+	--border-btn-primary-hover: rgb(182, 85, 29);
+	--color-btn-primary-hover: white;
+
+}
