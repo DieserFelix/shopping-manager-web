@@ -15,21 +15,21 @@
   let username: string = ""
   let password: string = ""
 
+  const submitHandler = () => {
+    login(username, password)
+  }
+
   let token: string = ""
   authToken.subscribe((value) => {
     token = value
   })
-  $: if (token.length > 0) {
+  $: if (token) {
     navigate("/dashboard")
-  }
-
-  const submitHandler = () => {
-    login(username, password)
   }
 </script>
 
 <Bar title="Shopping Manager" />
-<Container>
+<Container --justify-content="center">
   <Card --width="500px">
     <CardTitle>Login</CardTitle>
     <CardBody>
@@ -38,12 +38,14 @@
           id="username"
           label="User:"
           type={InputTypes.TEXT}
-          bind:value={username} />
+          bind:value={username}
+        />
         <Input
           id="password"
           label="Password:"
           type={InputTypes.PASSWORD}
-          bind:value={password} />
+          bind:value={password}
+        />
         <Button context={ButtonContexts.PRIMARY} type={ButtonTypes.SUBMIT}>
           Submit
         </Button>

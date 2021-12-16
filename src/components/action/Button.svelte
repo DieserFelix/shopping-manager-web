@@ -43,6 +43,8 @@
     display: inline;
     text-align: left;
     padding: 0;
+    background: none;
+    color: inherit;
   }
 
   button.neutral:hover {

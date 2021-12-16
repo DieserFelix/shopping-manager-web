@@ -11,7 +11,7 @@
   "prettier": {
     "svelteSortOrder": "options-scripts-markup-styles",
     "svelteStrictMode": false,
-    "svelteBracketNewLine": false,
+    "svelteBracketNewLine": true,
     "svelteAllowShorthand": false,
     "tabWidth": 2,
     "trailingComma": "all",

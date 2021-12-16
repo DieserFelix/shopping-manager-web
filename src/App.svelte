@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Route, Router } from "svelte-navigator"
+  import PrivateRoute from "./components/route/PrivateRoute.svelte"
   import Landing from "./Landing.svelte"
+  import ListView from "./ListView.svelte"
 </script>
 
 <Router>
@@ -8,6 +10,8 @@
     <Landing />
   </Route>
   <Route path="/dashboard">
-    <h1>JA MOIN</h1>
+    <PrivateRoute>
+      <ListView />
+    </PrivateRoute>
   </Route>
 </Router>

@@ -11,8 +11,9 @@
 <style>
   div.card {
     width: var(--width);
-    margin: 15px;
+    margin: var(--margin);
     padding: 5px;
+    color: var(--color-card);
     background: var(--bg-card);
     border: 1px solid var(--border-main);
     border-radius: 8px;
