@@ -24,6 +24,10 @@ body {
 	--bg-card: rgb(200, 210, 225);
 	--color-card: black;
 
+	--bg-alert: rgb(200, 0, 60);
+	--border-alert: rgb(180, 5, 60);
+	--color-alert: rgb(255, 230, 240);
+	
 	--bg-input: rgb(220, 220, 220);
 
 	--bg-btn-primary: rgb(210, 100, 20);

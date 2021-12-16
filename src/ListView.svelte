@@ -29,7 +29,6 @@
     visible={showMenu}
     onClickOutside={() => {
       showMenu = false
-      console.log("outside?")
     }}
   >
     <Button
