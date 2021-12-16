@@ -1,14 +1,28 @@
-export async function authFetch(
-  url: string,
-  method: "GET" | "POST" | "PUT" | "DELETE",
-  body: { [key: string]: any },
-  token: string,
-) {
-  const response = await fetch(url, {
-    method: method,
+import { ApiError, FetchParams } from "./types"
+
+export async function authFetch<Type>(params: FetchParams) {
+  const response = await fetch(params.url, {
+    method: params.method,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${params.token}`,
+      "Content-Type": "application/application-json",
+      Accept: "application/json",
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: params.body ? JSON.stringify(params.body) : undefined,
   })
+
+  if (!response.ok) {
+    let message: string
+    if (response.status == 422) {
+      message = "Please fill in all required fields"
+    } else {
+      message = (await response.json()).detail
+    }
+    throw new ApiError(response.status, message)
+  } else {
+    if (response.status == 204) {
+      return
+    }
+  }
+  return (await response.json()) as Type
 }

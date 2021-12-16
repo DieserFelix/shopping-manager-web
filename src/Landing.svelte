@@ -1,38 +1,46 @@
 <script lang="ts">
+  import { useMutation } from "@sveltestack/svelte-query"
   import { navigate } from "svelte-navigator"
   import { Button } from "./components/action"
   import { Card, CardBody, CardTitle } from "./components/card"
   import { Form, Input } from "./components/form"
   import { Bar, Container } from "./components/layout"
   import {
+    ApiError,
     authToken,
     ButtonContexts,
     ButtonTypes,
+    Credentials,
+    errorMessage,
     InputTypes,
     login,
+    Routes,
+    TokenResponse,
   } from "./lib"
 
   let username: string = ""
   let password: string = ""
 
-  const submitHandler = () => {
-    login(username, password)
-  }
-
-  let token: string = ""
-  authToken.subscribe((value) => {
-    token = value
+  const mutation = useMutation<TokenResponse, ApiError, Credentials>(login, {
+    onSuccess: (data) => {
+      authToken.set(data.access_token)
+      navigate(Routes.DASHBOARD)
+    },
+    onError: (error) => {
+      errorMessage.set(error.message)
+    },
   })
-  $: if (token) {
-    navigate("/dashboard")
+
+  const submitHandler = () => {
+    $mutation.mutate({ username, password })
   }
 </script>
 
 <Bar title="Shopping Manager" />
 <Container --justify-content="center">
   <Card --width="500px">
-    <CardTitle>Login</CardTitle>
     <CardBody>
+      <CardTitle>Login</CardTitle>
       <Form submitHandler={submitHandler}>
         <Input
           id="username"

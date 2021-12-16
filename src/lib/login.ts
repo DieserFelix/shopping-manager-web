@@ -1,23 +1,30 @@
-import { ApiError, authToken, errorMessage } from "."
-import { handleErrors } from "./handleErrors"
+import { getLoginApiRoute } from "./apiRoutes"
+import type { TokenResponse } from "./types"
+import { ApiError } from "./types"
 
-export function login(username: string, password: string) {
-  fetch("http://localhost:8000/api/login", {
+export async function login(credentials: {
+  username: string
+  password: string
+}) {
+  const response = await fetch(getLoginApiRoute(), {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Accept: "application/json",
     },
-    body: new URLSearchParams({ username: username, password: password }),
+    body: new URLSearchParams({
+      username: credentials.username,
+      password: credentials.password,
+    }),
   })
-    .then(handleErrors)
-    .then((response) => response.json())
-    .then((data) => authToken.set(data.access_token))
-    .catch((error: ApiError) => {
-      if (error.statusCode == 422) {
-        errorMessage.set("Please fill in all required fields")
-      } else {
-        errorMessage.set(error.message)
-      }
-    })
+  if (!response.ok) {
+    let message: string
+    if (response.status == 422) {
+      message = "Please fill in all required fields"
+    } else {
+      message = (await response.json()).detail
+    }
+    throw new ApiError(response.status, message)
+  }
+  return (await response.json()) as TokenResponse
 }

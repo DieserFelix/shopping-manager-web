@@ -1,3 +1,19 @@
+export type FetchParams = {
+  url: string
+  method: "GET" | "POST" | "PUT" | "DELETE"
+  body?: { [key: string]: any }
+  token: string
+}
+
+export type Credentials = {
+  username: string
+  password: string
+}
+
+export type TokenResponse = {
+  access_token: string
+  token_type: string
+}
 export class ApiError extends Error {
   statusCode: number
 
@@ -20,4 +36,5 @@ export const enum ButtonTypes {
 export const enum ButtonContexts {
   PRIMARY = "primary",
   NEUTRAL = "neutral",
+  ANCHOR = "anchor",
 }

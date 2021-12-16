@@ -11,7 +11,8 @@
   class={context}
   type={type}
   on:click={action}
-  on:contextmenu={cxtAction}>
+  on:contextmenu={cxtAction}
+>
   <slot />
 </button>
 
@@ -23,6 +24,7 @@
     text-decoration: none;
     padding: 0.375rem 0.75rem;
     font-size: inherit;
+    cursor: pointer;
   }
 
   button.primary {
@@ -49,5 +51,17 @@
 
   button.neutral:hover {
     text-decoration: underline;
+  }
+
+  button.anchor {
+    display: block;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    font-weight: bold;
+    background: none;
+  }
+
+  button.anchor:hover {
+    background: var(--bg-btn-anchor-hover);
   }
 </style>
