@@ -5,34 +5,19 @@
     ApiError,
     authFetch,
     authToken,
-    errorMessage,
     getStoresApiRoute,
     Store,
   } from "../../lib"
   import { Spinner } from "../content"
 
   export let storeId: number
-  export let selectStore: (storeId: number) => void
+  export let select: (storeId: number, onSuccess: () => void) => void
+  export let setError: (error: ApiError) => void = () => {}
 
   let token: string = ""
   authToken.subscribe((value) => (token = value))
 
-  let store: Store
-  const storeQuery = useQuery<Store, ApiError>(
-    ["stores", storeId],
-    () =>
-      authFetch<Store>({
-        url: getStoresApiRoute({ storeId: storeId }),
-        method: "GET",
-        token: token,
-      }),
-    {
-      onSuccess: (data) => (store = data),
-      onError: (error) => errorMessage.set(error.message),
-    },
-  )
-  let edit: boolean = false
-  const storeListQuery = useQuery<Store[], ApiError>(
+  const storesQuery = useQuery<Store[], ApiError>(
     "stores",
     () =>
       authFetch<Store[]>({
@@ -40,26 +25,32 @@
         method: "GET",
         token: token,
       }),
-    { onError: (error) => errorMessage.set(error.message) },
+    { onError: setError },
   )
 
-  let filter: string = ""
+  $: store = !$storesQuery.isLoading
+    ? $storesQuery.data.find((currentStore) => currentStore.id == storeId)
+    : undefined
 </script>
 
-{#if $storeQuery.isLoading || $storeListQuery.isLoading}
+{#if $storesQuery.isLoading}
   <Spinner size="25px" />
 {:else}
   <h5>Store</h5>
   <PropEdit
     label={store.name}
-    suggestions={$storeListQuery.data}
-    editHandler={(name) => {
-      const store = $storeListQuery.data.find(
+    suggestions={$storesQuery.data}
+    editHandler={(name, onSuccess) => {
+      const store = $storesQuery.data.find(
         (currentStore) =>
           currentStore.name.toLowerCase() === name.toLowerCase(),
       )
-      selectStore(store.id)
-      return store.name
+      if (!store) {
+        setError(new ApiError(404, `No such store: ${name}`))
+      }
+      if (store) {
+        select(store.id, onSuccess)
+      }
     }}
   />
 {/if}

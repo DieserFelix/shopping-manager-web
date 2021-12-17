@@ -5,13 +5,13 @@
   import { Card, CardBody, CardTitle } from "./components/card"
   import { Form, Input } from "./components/form"
   import { Bar, Container } from "./components/layout"
+  import { Alert } from "./components/network"
   import {
     ApiError,
     authToken,
     ButtonContexts,
     ButtonTypes,
     Credentials,
-    errorMessage,
     InputTypes,
     login,
     Routes,
@@ -20,6 +20,7 @@
 
   let username: string = ""
   let password: string = ""
+  let apiError: ApiError
 
   const mutation = useMutation<TokenResponse, ApiError, Credentials>(login, {
     onSuccess: (data) => {
@@ -27,9 +28,11 @@
       navigate(Routes.DASHBOARD)
     },
     onError: (error) => {
-      errorMessage.set(error.message)
+      apiError = error
     },
   })
+
+  $: errorMessage = apiError ? apiError.message : ""
 
   const submitHandler = () => {
     $mutation.mutate({ username, password })
@@ -42,6 +45,10 @@
     <CardBody>
       <CardTitle>Login</CardTitle>
       <Form submitHandler={submitHandler}>
+        <Alert
+          errorMessage={errorMessage}
+          dismiss={() => (apiError = undefined)}
+        />
         <Input
           id="username"
           label="User:"

@@ -60,7 +60,7 @@
   >
     <Icon>{IconNames.menu}</Icon>
   </Button>
-  <Card --width={width} slot="content">
+  <Card --width={width} --margin="0" slot="content">
     <ListGroup>
       <ListGroupAction action={() => navigate(Routes.LISTS)}>
         Shopping Lists

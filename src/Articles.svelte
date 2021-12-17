@@ -5,27 +5,30 @@
   import Spinner from "./components/content/Spinner.svelte"
   import { Bar, Container } from "./components/layout"
   import { Article as ArticleComponent } from "./components/models"
+  import { Alert } from "./components/network"
   import {
     ApiError,
     Article,
     authFetch,
     authToken,
-    errorMessage,
     getArticlesApiRoute,
   } from "./lib"
 
   let token: string = ""
   authToken.subscribe((value) => (token = value))
 
+  let apiError: ApiError
+  $: errorMessage = apiError ? apiError.message : ""
+
   const query = useQuery<Article[], ApiError>(
-    "articles",
+    ["articles", undefined],
     () =>
       authFetch<Article[]>({
         url: getArticlesApiRoute(),
         method: "GET",
         token: token,
       }),
-    { onError: (error) => errorMessage.set(error.message) },
+    { onError: (error) => (apiError = error) },
   )
 </script>
 
@@ -35,6 +38,7 @@
 
 <Container>
   <div class="content">
+    <Alert errorMessage={errorMessage} dismiss={() => (apiError = undefined)} />
     <h4>Articles</h4>
     {#if $query.isLoading}
       <Card>

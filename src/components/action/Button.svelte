@@ -29,8 +29,8 @@
 
   button.primary {
     display: block;
-    margin-top: 5px;
     width: 100%;
+    height: 100%;
     color: var(--color-btn-primary);
     background: var(--bg-btn-primary);
     border-color: var(--border-btn-primary);
@@ -54,7 +54,7 @@
   }
 
   button.anchor {
-    display: block;
+    display: inline;
     padding: 0.5rem 1rem;
     width: 100%;
     font-weight: bold;
@@ -63,5 +63,15 @@
 
   button.anchor:hover {
     background: var(--bg-btn-anchor-hover);
+  }
+
+  button.autoComplete {
+    background: var(--bg-input);
+    color: var(--color-input);
+    width: 100%;
+  }
+
+  button.autoComplete:hover {
+    background: var(--bg-btn-primary);
   }
 </style>

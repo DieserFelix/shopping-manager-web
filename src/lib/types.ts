@@ -64,4 +64,5 @@ export const enum ButtonContexts {
   PRIMARY = "primary",
   NEUTRAL = "neutral",
   ANCHOR = "anchor",
+  AUTO_COMPLETE = "autoComplete",
 }

@@ -14,7 +14,7 @@
 
   export let label: string
   export let suggestions: { name: string }[] = []
-  export let editHandler: (label: string) => void
+  export let editHandler: (label: string, onSuccess: () => void) => void
 
   let edit: boolean = false
   let value = label
@@ -24,8 +24,7 @@
   })
 
   const submitHandler = () => {
-    label = editHandler(value)
-    edit = false
+    editHandler(value, () => (edit = false))
   }
 </script>
 
@@ -45,29 +44,26 @@
     </Button>
   </div>
   <div class="editor" style={`display: ${edit ? "block" : "none"}`}>
-    <Form submitHandler={submitHandler} slot="content">
+    <Form submitHandler={submitHandler}>
       <Tooltip visible={edit}>
-        <Input bind:value type={InputTypes.TEXT} autofocus={true} />
-        {#if suggestions.length}
-          <Card --width="100%" slot="content">
-            <ListGroup>
-              {#each suggestions as suggestion}
-                {#if suggestion.name
-                  .toLowerCase()
-                  .includes(value.toLowerCase())}
-                  <ListGroupAction
-                    action={() => {
-                      value = suggestion.name
-                      submitHandler()
-                    }}
-                  >
-                    {suggestion.name}
-                  </ListGroupAction>
-                {/if}
-              {/each}
-            </ListGroup>
-          </Card>
-        {/if}
+        <Input bind:value type={InputTypes.TEXT} autofocus={edit} />
+        <Card --margin="0 1px 0 0" slot="content">
+          <ListGroup>
+            {#each suggestions as suggestion}
+              {#if suggestion.name.toLowerCase().includes(value.toLowerCase())}
+                <ListGroupAction
+                  action={() => {
+                    value = suggestion.name
+                    submitHandler()
+                  }}
+                  buttonContext={ButtonContexts.AUTO_COMPLETE}
+                >
+                  {suggestion.name}
+                </ListGroupAction>
+              {/if}
+            {/each}
+          </ListGroup>
+        </Card>
       </Tooltip>
     </Form>
   </div>

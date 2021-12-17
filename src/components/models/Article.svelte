@@ -10,12 +10,12 @@
     Article,
     authFetch,
     authToken,
-    errorMessage,
     getArticlesApiRoute,
   } from "../../lib"
   import { Card, CardTitle } from "../card"
   import CardBody from "../card/CardBody.svelte"
   import { Spinner } from "../content"
+  import { Alert } from "../network"
   import PropEdit from "./PropEdit.svelte"
 
   export let articleId: number
@@ -23,8 +23,9 @@
   let token: string = ""
   authToken.subscribe((value) => (token = value))
 
-  const queryClient = useQueryClient()
   let article: Article
+  let apiError: ApiError
+  const queryClient = useQueryClient()
   const query = useQuery<Article, ApiError>(
     ["articles", articleId],
     () =>
@@ -35,7 +36,7 @@
       }),
     {
       onSuccess: (data) => (article = data),
-      onError: (error) => errorMessage.set(error.message),
+      onError: (error) => (apiError = error),
     },
   )
 
@@ -53,10 +54,28 @@
     {
       onSuccess: (data) => {
         article = data
+        apiError = undefined
       },
-      onError: (error) => errorMessage.set(error.message),
+      onError: (error) => {
+        apiError = error
+      },
+      onMutate: () => {
+        queryClient.invalidateQueries(["articles", article.id])
+      },
     },
   )
+
+  $: errorMessage = apiError ? apiError.message : ""
+
+  /*
+  TODO: 
+    - Implement CategorySelector, add PropEdit for Price
+    - Display StoreSelector, CategorySelector, Price PropEdit in one row, 30% each
+    - Rework AutoCompletion into its own Component with keyboard controls (maybe rethink Tooltip approach)
+    - Implement DELETE functionality (CardDismiss possibly)
+    - Implement CREATE functionality
+    - Implement pagination
+  */
 </script>
 
 <Card --width="100%" --margin="15px">
@@ -64,30 +83,46 @@
     {#if $query.isLoading}
       <Spinner size="50px" />
     {:else}
+      <Alert
+        errorMessage={errorMessage}
+        dismiss={() => (apiError = undefined)}
+      />
       <CardTitle>
         <PropEdit
           label={article.name}
-          editHandler={(name) => {
-            $mutation.mutate({
-              name: name,
-            })
+          editHandler={(name, onSuccess) => {
+            $mutation.mutate(
+              {
+                name: name,
+              },
+              { onSuccess },
+            )
           }}
         />
       </CardTitle>
       <PropEdit
         label={article.detail}
-        editHandler={(detail) => {
-          $mutation.mutate({
-            detail: detail,
-          })
+        editHandler={async (detail, onSuccess) => {
+          $mutation.mutate(
+            {
+              detail: detail,
+            },
+            { onSuccess },
+          )
         }}
       />
       <StoreSelector
         storeId={article.store_id}
-        selectStore={(storeId) => {
-          $mutation.mutate({
-            store_id: storeId,
-          })
+        select={(storeId, onSuccess) => {
+          $mutation.mutate(
+            {
+              store_id: storeId,
+            },
+            { onSuccess },
+          )
+        }}
+        setError={(error) => {
+          apiError = error
         }}
       />
     {/if}

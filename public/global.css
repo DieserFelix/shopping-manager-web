@@ -32,7 +32,8 @@ body {
 	--color-alert: rgb(255, 230, 240);
 	
 	--bg-input: rgb(220, 220, 220);
-
+	--color-input: black;
+	
 	--bg-btn-primary: rgb(210, 100, 20);
 	--border-btn-primary: rgb(180, 80, 21);
 	--color-btn-primary: white;

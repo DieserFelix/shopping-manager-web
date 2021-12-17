@@ -1,28 +1,21 @@
 <script lang="ts">
-  import {
-    ButtonContexts,
-    ButtonTypes,
-    errorMessage,
-    IconNames,
-  } from "../../lib"
+  import { ButtonContexts, ButtonTypes, IconNames } from "../../lib"
   import { Button } from "../action"
   import { Icon } from "../content"
 
-  let error: string = ""
-  errorMessage.subscribe((msg) => {
-    error = msg
-  })
+  export let errorMessage: string = ""
+  export let dismiss: () => void
 </script>
 
-{#if error}
+{#if errorMessage}
   <div class="alert">
     <h5>Attention!</h5>
-    {error}
+    {errorMessage}
     <div class="dismiss">
       <Button
         type={ButtonTypes.BUTTON}
         context={ButtonContexts.NEUTRAL}
-        action={() => errorMessage.set("")}
+        action={dismiss}
       >
         <Icon>{IconNames.close}</Icon>
       </Button>

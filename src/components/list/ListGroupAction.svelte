@@ -4,12 +4,13 @@
 
   export let action: () => void = () => {}
   export let cxtAction: () => void = () => {}
+  export let buttonContext: ButtonContexts = ButtonContexts.ANCHOR
 </script>
 
 <li>
   <Button
     type={ButtonTypes.BUTTON}
-    context={ButtonContexts.ANCHOR}
+    context={buttonContext}
     action={action}
     cxtAction={cxtAction}
   >
@@ -21,5 +22,9 @@
   li {
     border-top: 1px solid var(--border-list);
     line-height: 1.5;
+  }
+
+  li:first-child {
+    border-top: none;
   }
 </style>
