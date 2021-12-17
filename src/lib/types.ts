@@ -14,6 +14,33 @@ export type TokenResponse = {
   access_token: string
   token_type: string
 }
+
+export type Article = {
+  id: number
+  name: string
+  detail: string
+  store_id: number
+  category_id: number
+  price: Price
+}
+
+export type Price = {
+  price: number
+  currency: string
+}
+
+export type Store = {
+  id: number
+  name: string
+  articles: number[]
+}
+
+export type Category = {
+  id: number
+  name: string
+  lists: number[]
+  articles: number[]
+}
 export class ApiError extends Error {
   statusCode: number
 

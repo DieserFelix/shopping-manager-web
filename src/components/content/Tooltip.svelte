@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { useOutsideClick } from "../../lib"
+
   export let visible: boolean = false
   export let placement: "left" | "top" | "right" | "bottom" = "bottom"
   export let onClickOutside: () => void = () => {}
@@ -36,19 +38,7 @@
     }
   }
 
-  const clickOutside = (element: HTMLDivElement) => {
-    function onClick(event: MouseEvent) {
-      if (!element.contains(event.target as Node)) {
-        onClickOutside()
-      }
-    }
-    document.body.addEventListener("click", onClick)
-    return {
-      destroy() {
-        document.body.removeEventListener("click", onClick)
-      },
-    }
-  }
+  const outsideClick = useOutsideClick(onClickOutside)
 
   $: {
     if (context && tooltip) {
@@ -57,7 +47,7 @@
   }
 </script>
 
-<div class="tooltipContainer" use:clickOutside>
+<div class="tooltipContainer" use:outsideClick>
   <div class="context" bind:this={context}>
     <slot />
   </div>

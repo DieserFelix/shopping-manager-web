@@ -42,7 +42,7 @@
   }
 
   button.neutral {
-    display: inline;
+    display: inline-block;
     text-align: left;
     padding: 0;
     background: none;

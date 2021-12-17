@@ -5,7 +5,7 @@ export async function authFetch<Type>(params: FetchParams) {
     method: params.method,
     headers: {
       Authorization: `Bearer ${params.token}`,
-      "Content-Type": "application/application-json",
+      "Content-Type": "application/json",
       Accept: "application/json",
     },
     body: params.body ? JSON.stringify(params.body) : undefined,
@@ -14,6 +14,7 @@ export async function authFetch<Type>(params: FetchParams) {
   if (!response.ok) {
     let message: string
     if (response.status == 422) {
+      console.log(response.json())
       message = "Please fill in all required fields"
     } else {
       message = (await response.json()).detail
