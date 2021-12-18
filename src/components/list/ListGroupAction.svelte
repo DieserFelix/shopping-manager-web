@@ -5,6 +5,7 @@
   export let action: () => void = () => {}
   export let cxtAction: () => void = () => {}
   export let buttonContext: ButtonContexts = ButtonContexts.ANCHOR
+  export let active: boolean = false
 </script>
 
 <li>
@@ -13,6 +14,7 @@
     context={buttonContext}
     action={action}
     cxtAction={cxtAction}
+    active={active}
   >
     <slot />
   </Button>

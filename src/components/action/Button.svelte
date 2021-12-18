@@ -5,10 +5,11 @@
   export let action: () => void = () => {}
   export let cxtAction: () => void = () => {}
   export let type: ButtonTypes
+  export let active: boolean = false
 </script>
 
 <button
-  class={context}
+  class={active ? `${context}-active` : context}
   type={type}
   on:click={action}
   on:contextmenu={cxtAction}
@@ -27,7 +28,8 @@
     cursor: pointer;
   }
 
-  button.primary {
+  .primary,
+  .primary-active {
     display: block;
     width: 100%;
     height: 100%;
@@ -36,12 +38,14 @@
     border-color: var(--border-btn-primary);
   }
 
-  button.primary:hover {
+  .primary:hover,
+  .primary-active {
     background: var(--bg-btn-primary-hover);
     border-color: var(--border-btn-primary-hover);
   }
 
-  button.neutral {
+  .neutral,
+  .neutral-active {
     display: inline-block;
     text-align: left;
     padding: 0;
@@ -49,11 +53,13 @@
     color: inherit;
   }
 
-  button.neutral:hover {
+  .neutral:hover,
+  .neutral-active {
     text-decoration: underline;
   }
 
-  button.anchor {
+  .anchor,
+  .anchor-active {
     display: inline;
     padding: 0.5rem 1rem;
     width: 100%;
@@ -61,17 +67,20 @@
     background: none;
   }
 
-  button.anchor:hover {
+  .anchor:hover,
+  .anchor-active {
     background: var(--bg-btn-anchor-hover);
   }
 
-  button.autoComplete {
+  .autoComplete,
+  .autoComplete-active {
     background: var(--bg-input);
     color: var(--color-input);
     width: 100%;
   }
 
-  button.autoComplete:hover {
+  .autoComplete:hover,
+  .autoComplete-active {
     background: var(--bg-btn-primary);
   }
 </style>

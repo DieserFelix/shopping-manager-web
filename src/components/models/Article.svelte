@@ -4,7 +4,7 @@
     useQuery,
     useQueryClient,
   } from "@sveltestack/svelte-query"
-  import { Selector } from "."
+  import { PropEdit, Selector } from "."
   import {
     ApiError,
     Article,
@@ -14,11 +14,9 @@
     getCategoriesApiRoute,
     getStoresApiRoute,
   } from "../../lib"
-  import { Card, Subtitle, Title } from "../card"
-  import CardBody from "../card/CardBody.svelte"
+  import { Card, CardBody, Subtitle, Title } from "../card"
   import { Spinner } from "../content"
   import { Alert } from "../network"
-  import PropEdit from "./PropEdit.svelte"
 
   export let articleId: number
 

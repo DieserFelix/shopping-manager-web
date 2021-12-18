@@ -39,7 +39,7 @@
   <Subtitle>{title}</Subtitle>
   <PropEdit
     label={entity.name}
-    suggestions={$query.data}
+    options={$query.data}
     editHandler={(name, onSuccess) => {
       const entity = $query.data.find(
         (currentEntity) =>
