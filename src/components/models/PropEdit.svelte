@@ -45,16 +45,16 @@
     <Form submitHandler={submitHandler}>
       <Tooltip visible={edit}>
         <Input bind:value type={InputTypes.TEXT} autofocus={edit} />
-        {#if edit}
-          <AutoComplete
-            options={options}
-            bind:value
-            completionHandler={(suggestion) => {
-              value = suggestion
-              submitHandler()
-            }}
-          />
-        {/if}
+        <AutoComplete
+          slot="content"
+          visible={edit}
+          options={options}
+          bind:value
+          completionHandler={(suggestion) => {
+            value = suggestion
+            submitHandler()
+          }}
+        />
       </Tooltip>
     </Form>
   </div>

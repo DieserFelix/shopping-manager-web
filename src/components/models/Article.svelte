@@ -69,7 +69,6 @@
 
   /*
   TODO: 
-    - Rework AutoCompletion into its own Component with keyboard controls (maybe rethink Tooltip approach)
     - Implement DELETE functionality (CardDismiss possibly)
     - Implement CREATE functionality
     - Implement pagination

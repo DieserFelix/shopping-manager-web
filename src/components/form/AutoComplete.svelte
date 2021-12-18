@@ -3,6 +3,7 @@
   import { Card } from "../card"
   import { ListGroup, ListGroupAction } from "../list"
 
+  export let visible: boolean
   export let options: { name: string }[] = []
   export let value: string
   export let completionHandler: (suggestion: string) => void = () => {}
@@ -14,7 +15,7 @@
   $: index = suggestions.length * 0 - 1
 
   const keyHandler = (event: KeyboardEvent) => {
-    if (options.length) {
+    if (visible) {
       switch (event.key) {
         case "Down":
         case "ArrowDown":
@@ -58,20 +59,22 @@
 
 <svelte:window on:keydown={keyHandler} />
 
-<Card --margin="0" slot="content">
-  <ListGroup>
-    {#each suggestions as suggestion}
-      {#if suggestion.name.toLowerCase().includes(value.toLowerCase())}
-        <ListGroupAction
-          action={() => completionHandler(suggestion.name)}
-          buttonContext={ButtonContexts.AUTO_COMPLETE}
-          active={index > -1
-            ? suggestion.name == suggestions[index].name
-            : false}
-        >
-          {suggestion.name}
-        </ListGroupAction>
-      {/if}
-    {/each}
-  </ListGroup>
-</Card>
+{#if suggestions.length}
+  <Card --margin="0">
+    <ListGroup>
+      {#each suggestions as suggestion}
+        {#if suggestion.name.toLowerCase().includes(value.toLowerCase())}
+          <ListGroupAction
+            action={() => completionHandler(suggestion.name)}
+            buttonContext={ButtonContexts.AUTO_COMPLETE}
+            active={index > -1
+              ? suggestion.name == suggestions[index].name
+              : false}
+          >
+            {suggestion.name}
+          </ListGroupAction>
+        {/if}
+      {/each}
+    </ListGroup>
+  </Card>
+{/if}
