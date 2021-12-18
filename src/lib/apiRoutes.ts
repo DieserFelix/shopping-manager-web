@@ -43,3 +43,7 @@ export function getCategoriesApiRoute(params: { id?: number; name?: string }) {
   }
   return `${remote}${ApiRoutes.CATEGORIES}/`
 }
+
+export function getPricesApiRoute(id: number) {
+  return `${remote}${ApiRoutes.ARTICLES}/${id}/prices`
+}

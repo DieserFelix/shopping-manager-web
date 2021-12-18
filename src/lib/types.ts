@@ -21,12 +21,14 @@ export type Article = {
   detail: string
   store_id: number
   category_id: number
-  price: Price
+  price: Omit<Price, "valid_at" | "article_id">
 }
 
 export type Price = {
   price: number
   currency: string
+  valid_at: string
+  article_id: number
 }
 
 export type Store = {
@@ -62,6 +64,7 @@ export const enum ButtonTypes {
 
 export const enum ButtonContexts {
   PRIMARY = "primary",
+  TRANSPARENT = "transparent",
   NEUTRAL = "neutral",
   ANCHOR = "anchor",
   AUTO_COMPLETE = "autoComplete",

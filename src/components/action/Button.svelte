@@ -26,6 +26,7 @@
     padding: 0.375rem 0.75rem;
     font-size: inherit;
     cursor: pointer;
+    background: none;
   }
 
   .primary,
@@ -44,12 +45,22 @@
     border-color: var(--border-btn-primary-hover);
   }
 
+  .transparent,
+  .transparent-active {
+    display: block;
+    width: 100%;
+  }
+
+  .transparent:hover,
+  .transparent-active {
+    background: var(--bg-card);
+  }
+
   .neutral,
   .neutral-active {
     display: inline-block;
     text-align: left;
     padding: 0;
-    background: none;
     color: inherit;
   }
 
@@ -64,7 +75,6 @@
     padding: 0.5rem 1rem;
     width: 100%;
     font-weight: bold;
-    background: none;
   }
 
   .anchor:hover,

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useMutation, useQueryClient } from "@sveltestack/svelte-query"
+  import { PriceHistory } from "."
   import {
     ApiError,
     Article,
@@ -10,7 +11,7 @@
     getStoresApiRoute,
   } from "../../lib"
   import { Deletion } from "../action/"
-  import { Card, CardBody, Subtitle, Title } from "../card"
+  import { Card, CardBody, CardFooter, Subtitle, Title } from "../card"
   import CardDismissal from "../card/CardDismissal.svelte"
   import { PropEdit, Selector } from "../form"
   import { Alert } from "../network"
@@ -69,7 +70,6 @@
   TODO: 
     - Implement CREATE functionality
     - Implement pagination
-    - Implement price history with ChartJS (learn how to do in Svelte)
   */
 </script>
 
@@ -167,6 +167,9 @@
       </tr>
     </table>
   </CardBody>
+  <CardFooter>
+    <PriceHistory article={article} />
+  </CardFooter>
 </Card>
 
 <style>
