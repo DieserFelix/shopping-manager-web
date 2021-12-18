@@ -33,7 +33,8 @@
     background: var(--bg-alert);
     border: 1px solid var(--border-alert);
     border-radius: 8px;
-    margin-bottom: 5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
   }
 
   h5 {

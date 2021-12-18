@@ -10,6 +10,7 @@
 
 <style>
   div.card {
+    position: relative;
     width: var(--width);
     margin: var(--margin);
     color: var(--color-card);

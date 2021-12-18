@@ -1,9 +1,9 @@
 <script lang="ts">
   import { useQuery } from "@sveltestack/svelte-query"
-  import { PropEdit } from "."
   import { ApiError, authFetch, authToken } from "../../lib"
   import { Subtitle } from "../card"
   import { Spinner } from "../content"
+  import { PropEdit } from "./"
 
   type EntityType = $$Generic<{ id: number; name: string }>
 

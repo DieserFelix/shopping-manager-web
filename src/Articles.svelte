@@ -21,7 +21,7 @@
   $: errorMessage = apiError ? apiError.message : ""
 
   const query = useQuery<Article[], ApiError>(
-    ["articles", undefined],
+    "articles",
     () =>
       authFetch<Article[]>({
         url: getArticlesApiRoute(),
@@ -41,13 +41,17 @@
     <Alert errorMessage={errorMessage} dismiss={() => (apiError = undefined)} />
     <h4>Articles</h4>
     {#if $query.isLoading}
-      <Card>
+      <Card --width="100%">
         <CardBody><Spinner /></CardBody>
       </Card>
-    {:else}
+    {:else if $query.data.length}
       {#each $query.data as article}
-        <ArticleComponent articleId={article.id} />
+        <ArticleComponent article={article} />
       {/each}
+    {:else}
+      <Card --width="100%">
+        <CardBody>Such empty</CardBody>
+      </Card>
     {/if}
   </div>
 </Container>

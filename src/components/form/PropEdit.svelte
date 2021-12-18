@@ -8,7 +8,7 @@
   } from "../../lib"
   import { Button } from "../action"
   import { Icon, Tooltip } from "../content"
-  import { AutoComplete, Form, Input } from "../form"
+  import { AutoComplete, Form, Input } from "./"
 
   export let label: string
   export let options: { name: string }[] = []
@@ -26,11 +26,7 @@
   }
 </script>
 
-<div
-  class="propEditor"
-  use:outsideClick
-  style={`--editMode:${edit ? "block" : "none"}`}
->
+<div class="propEditor" use:outsideClick>
   <div class="showcase" style={`display: ${edit ? "none" : "block"}`}>
     {label}
     <Button
