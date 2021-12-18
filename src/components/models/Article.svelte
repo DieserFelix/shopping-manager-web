@@ -4,15 +4,17 @@
     useQuery,
     useQueryClient,
   } from "@sveltestack/svelte-query"
-  import { StoreSelector } from "."
+  import { Selector } from "."
   import {
     ApiError,
     Article,
     authFetch,
     authToken,
     getArticlesApiRoute,
+    getCategoriesApiRoute,
+    getStoresApiRoute,
   } from "../../lib"
-  import { Card, CardTitle } from "../card"
+  import { Card, Subtitle, Title } from "../card"
   import CardBody from "../card/CardBody.svelte"
   import { Spinner } from "../content"
   import { Alert } from "../network"
@@ -69,12 +71,11 @@
 
   /*
   TODO: 
-    - Implement CategorySelector, add PropEdit for Price
-    - Display StoreSelector, CategorySelector, Price PropEdit in one row, 30% each
     - Rework AutoCompletion into its own Component with keyboard controls (maybe rethink Tooltip approach)
     - Implement DELETE functionality (CardDismiss possibly)
     - Implement CREATE functionality
     - Implement pagination
+    - Implement price history with ChartJS (learn how to do in Svelte)
   */
 </script>
 
@@ -87,7 +88,7 @@
         errorMessage={errorMessage}
         dismiss={() => (apiError = undefined)}
       />
-      <CardTitle>
+      <Title>
         <PropEdit
           label={article.name}
           editHandler={(name, onSuccess) => {
@@ -99,7 +100,7 @@
             )
           }}
         />
-      </CardTitle>
+      </Title>
       <PropEdit
         label={article.detail}
         editHandler={async (detail, onSuccess) => {
@@ -111,20 +112,76 @@
           )
         }}
       />
-      <StoreSelector
-        storeId={article.store_id}
-        select={(storeId, onSuccess) => {
-          $mutation.mutate(
-            {
-              store_id: storeId,
-            },
-            { onSuccess },
-          )
-        }}
-        setError={(error) => {
-          apiError = error
-        }}
-      />
+      <table>
+        <tr>
+          <td>
+            <Selector
+              entityId={article.store_id}
+              title={"Store"}
+              queryString={getStoresApiRoute}
+              queryKey={["stores", undefined]}
+              select={(storeId, onSuccess) => {
+                $mutation.mutate(
+                  {
+                    store_id: storeId,
+                  },
+                  { onSuccess },
+                )
+              }}
+              setError={(error) => {
+                apiError = error
+              }}
+            />
+          </td>
+          <td>
+            <Selector
+              entityId={article.category_id}
+              title={"Category"}
+              queryString={getCategoriesApiRoute}
+              queryKey={["categories", undefined]}
+              select={(categoryId, onSuccess) => {
+                $mutation.mutate(
+                  {
+                    category_id: categoryId,
+                  },
+                  { onSuccess },
+                )
+              }}
+              setError={(error) => {
+                apiError = error
+              }}
+            />
+          </td>
+          <td>
+            <Subtitle>Price ({article.price.currency})</Subtitle>
+            <PropEdit
+              label={`${article.price.price}`}
+              editHandler={async (price, onSuccess) => {
+                $mutation.mutate(
+                  {
+                    price: {
+                      price: parseFloat(price),
+                      currency: article.price.currency,
+                    },
+                  },
+                  { onSuccess },
+                )
+              }}
+            />
+          </td>
+        </tr>
+      </table>
     {/if}
   </CardBody>
 </Card>
+
+<style>
+  table {
+    width: 100%;
+  }
+
+  td {
+    width: 30%;
+    margin: 5px;
+  }
+</style>

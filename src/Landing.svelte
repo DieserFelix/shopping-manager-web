@@ -2,7 +2,7 @@
   import { useMutation } from "@sveltestack/svelte-query"
   import { navigate } from "svelte-navigator"
   import { Button } from "./components/action"
-  import { Card, CardBody, CardTitle } from "./components/card"
+  import { Card, CardBody, Title } from "./components/card"
   import { Form, Input } from "./components/form"
   import { Bar, Container } from "./components/layout"
   import { Alert } from "./components/network"
@@ -43,7 +43,7 @@
 <Container --justify-content="center">
   <Card --width="500px">
     <CardBody>
-      <CardTitle>Login</CardTitle>
+      <Title>Login</Title>
       <Form submitHandler={submitHandler}>
         <Alert
           errorMessage={errorMessage}

@@ -5,6 +5,7 @@ const enum ApiRoutes {
   LOGOUT = "/logout",
   ARTICLES = "/articles",
   STORES = "/stores",
+  CATEGORIES = "/categories",
 }
 
 export function getLoginApiRoute() {
@@ -19,17 +20,26 @@ export function getArticlesApiRoute(articleId: number = undefined) {
   return `${remote}${ApiRoutes.ARTICLES}${articleId ? `/${articleId}` : "/"}`
 }
 
-export function getStoresApiRoute(params: {
-  storeId?: number
-  storeName?: string
-}) {
-  const { storeId, storeName } = params
-  if (storeId !== undefined) {
-    return `${remote}${ApiRoutes.STORES}/${params.storeId}`
-  } else if (storeName !== undefined) {
+export function getStoresApiRoute(params: { id?: number; name?: string }) {
+  const { id: id, name: name } = params
+  if (id !== undefined) {
+    return `${remote}${ApiRoutes.STORES}/${id}`
+  } else if (name !== undefined) {
     return `${remote}${ApiRoutes.STORES}?${new URLSearchParams({
-      filter: params.storeName,
+      filter: name,
     })}`
   }
   return `${remote}${ApiRoutes.STORES}/`
+}
+
+export function getCategoriesApiRoute(params: { id?: number; name?: string }) {
+  const { id, name } = params
+  if (id !== undefined) {
+    return `${remote}${ApiRoutes.CATEGORIES}/${id}`
+  } else if (name !== undefined) {
+    return `${remote}${ApiRoutes.CATEGORIES}?${new URLSearchParams({
+      filter: name,
+    })}`
+  }
+  return `${remote}${ApiRoutes.CATEGORIES}/`
 }

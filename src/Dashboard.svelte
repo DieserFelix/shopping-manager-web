@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, CardTitle } from "./components/card"
+  import { Card, Title } from "./components/card"
   import { Menu } from "./components/content"
   import { Bar, Container } from "./components/layout"
 </script>
@@ -13,6 +13,6 @@
 </Bar>
 <Container>
   <Card --width="80%" --margin="15px">
-    <CardTitle>Shopping Lists</CardTitle>
+    <Title>Shopping Lists</Title>
   </Card>
 </Container>

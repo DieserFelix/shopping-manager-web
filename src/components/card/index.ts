@@ -1,5 +1,5 @@
 export { default as Card } from "./Card.svelte"
 export { default as CardBody } from "./CardBody.svelte"
 export { default as CardFooter } from "./CardFooter.svelte"
-export { default as CardSubtitle } from "./CardSubtitle.svelte"
-export { default as CardTitle } from "./CardTItle.svelte"
+export { default as Subtitle } from "./CardSubtitle.svelte"
+export { default as Title } from "./CardTItle.svelte"

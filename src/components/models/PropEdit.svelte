@@ -68,6 +68,3 @@
     </Form>
   </div>
 </div>
-
-<style>
-</style>
