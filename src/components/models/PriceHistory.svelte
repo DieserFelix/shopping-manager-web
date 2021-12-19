@@ -38,7 +38,7 @@
     if (!$query.isLoading) {
       history = {
         labels: $query.data.map((price) => {
-          const date = new Date(price.valid_at)
+          const date = new Date(price.created_at)
           return `${date.toLocaleDateString()}`
         }),
         datasets: [

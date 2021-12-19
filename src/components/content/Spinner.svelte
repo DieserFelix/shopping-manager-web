@@ -3,7 +3,7 @@
 </script>
 
 <div class="spinnerContainer">
-  <div class="spinner" style="--size: 250px" />
+  <div class="spinner" style={`--size: ${size}`} />
 </div>
 
 <style>

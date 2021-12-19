@@ -1,35 +1,43 @@
 <script lang="ts">
   import { useQuery } from "@sveltestack/svelte-query"
+  import { Button } from "./components/action"
   import { Card, CardBody } from "./components/card"
-  import { Menu } from "./components/content"
+  import { Icon, Menu } from "./components/content"
   import Spinner from "./components/content/Spinner.svelte"
   import { Bar, Container } from "./components/layout"
-  import { Article as ArticleComponent } from "./components/models"
-  import { Alert } from "./components/network"
+  import { ArticleCreateCard, ArticleUpdateCard } from "./components/models"
   import {
     ApiError,
     Article,
     authFetch,
     authToken,
+    ButtonContexts,
+    ButtonTypes,
     getArticlesApiRoute,
+    IconNames,
   } from "./lib"
 
-  let token: string = ""
-  authToken.subscribe((value) => (token = value))
-
-  let apiError: ApiError
-  $: errorMessage = apiError ? apiError.message : ""
-
-  const query = useQuery<Article[], ApiError>(
-    "articles",
-    () =>
-      authFetch<Article[]>({
-        url: getArticlesApiRoute(),
-        method: "GET",
-        token: token,
+  const getArticles = useQuery<Article[], ApiError>("articles", () =>
+    authFetch<Article[]>({
+      url: getArticlesApiRoute({
+        sort_by: "name",
+        asc: false,
       }),
-    { onError: (error) => (apiError = error) },
+      method: "GET",
+      token: $authToken,
+    }),
   )
+
+  let createArticle = false
+
+  $: articles = $getArticles.isLoading ? [] : $getArticles.data
+  $: {
+    if (articles.length == 0) {
+      createArticle = true
+    } else {
+      createArticle = false
+    }
+  }
 </script>
 
 <Bar title="Shopping Manager">
@@ -38,20 +46,32 @@
 
 <Container>
   <div class="content">
-    <Alert errorMessage={errorMessage} dismiss={() => (apiError = undefined)} />
     <h4>Articles</h4>
-    {#if $query.isLoading}
+    {#if !articles}
       <Card --width="100%">
         <CardBody><Spinner /></CardBody>
       </Card>
-    {:else if $query.data.length}
-      {#each $query.data as article}
-        <ArticleComponent article={article} />
-      {/each}
     {:else}
-      <Card --width="100%">
-        <CardBody>Such empty</CardBody>
-      </Card>
+      <div class="controls">
+        <Button
+          type={ButtonTypes.BUTTON}
+          context={ButtonContexts.NEUTRAL}
+          action={() => (createArticle = !createArticle)}
+        >
+          <Icon>{IconNames.add}</Icon>
+        </Button>
+        {#if createArticle}
+          <ArticleCreateCard
+            successHandler={() => (createArticle = false)}
+            slot="content"
+          />
+        {/if}
+      </div>
+      {#if articles.length}
+        {#each articles as article (`article-${article.id}`)}
+          <ArticleUpdateCard article={article} />
+        {/each}
+      {/if}
     {/if}
   </div>
 </Container>
@@ -59,6 +79,10 @@
 <style>
   div.content {
     width: 80%;
+  }
+
+  div.controls {
+    color: white;
   }
 
   h4 {

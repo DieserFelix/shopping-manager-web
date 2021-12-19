@@ -11,10 +11,21 @@
   import { AutoComplete, Form, Input } from "./"
 
   export let label: string
-  export let options: { name: string }[] = []
+  export let permaEdit: boolean = false
   export let editHandler: (label: string, onSuccess: () => void) => void
-
-  let edit: boolean = false
+  export let autoComplete: {
+    queryKey: string
+    queryString: (params: {
+      id?: number
+      name?: string
+      sort_by?: string
+      page?: number
+      limit?: number
+      asc?: boolean
+    }) => string
+  } = undefined
+  let edit = false
+  let focus = false
   let value = label
 
   const outsideClick = useOutsideClick(() => {
@@ -27,31 +38,40 @@
 </script>
 
 <div class="propEditor" use:outsideClick>
-  <div class="showcase" style={`display: ${edit ? "none" : "block"}`}>
+  {#if !permaEdit && !edit}
     {label}
     <Button
       type={ButtonTypes.BUTTON}
       context={ButtonContexts.NEUTRAL}
-      action={() => (edit = true)}
+      action={() => {
+        setTimeout(() => {
+          edit = true
+        }, 10)
+      }}
     >
       <Icon>{IconNames.modeEdit}</Icon>
     </Button>
-  </div>
-  <div class="editor" style={`display: ${edit ? "block" : "none"}`}>
+  {/if}
+  {#if edit || permaEdit}
     <Form submitHandler={submitHandler}>
-      <Tooltip visible={edit}>
-        <Input bind:value type={InputTypes.TEXT} autofocus={edit} />
+      <Tooltip visible={focus}>
+        <Input
+          bind:value
+          type={InputTypes.TEXT}
+          bind:focus
+          blurHandler={() => submitHandler()}
+        />
         <AutoComplete
           slot="content"
-          visible={edit}
-          options={options}
+          visible={focus && autoComplete !== undefined}
           bind:value
           completionHandler={(suggestion) => {
             value = suggestion
             submitHandler()
           }}
+          {...autoComplete}
         />
       </Tooltip>
     </Form>
-  </div>
+  {/if}
 </div>

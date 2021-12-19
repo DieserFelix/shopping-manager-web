@@ -19,29 +19,26 @@ export type Article = {
   id: number
   name: string
   detail: string
-  store_id: number
-  category_id: number
-  price: Omit<Price, "valid_at" | "article_id">
+  store: string
+  category: string
+  price: Omit<Price, "created_at" | "article_id">
 }
 
 export type Price = {
   price: number
   currency: string
-  valid_at: string
+  created_at: string
   article_id: number
 }
 
 export type Store = {
   id: number
   name: string
-  articles: number[]
 }
 
 export type Category = {
   id: number
   name: string
-  lists: number[]
-  articles: number[]
 }
 export class ApiError extends Error {
   statusCode: number
