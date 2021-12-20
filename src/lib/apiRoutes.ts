@@ -1,3 +1,5 @@
+import type { PaginationParams } from "."
+
 export const remote = "http://localhost:8000/api"
 
 const enum ApiRoutes {
@@ -6,6 +8,7 @@ const enum ApiRoutes {
   ARTICLES = "/articles",
   STORES = "/stores",
   CATEGORIES = "/categories",
+  BRANDS = "/brands",
 }
 
 export function getLoginApiRoute() {
@@ -16,106 +19,90 @@ export function getLogoutApiRoute() {
   return `${remote}${ApiRoutes.LOGOUT}`
 }
 
-export function getArticlesApiRoute(
-  params: {
-    id?: number
-    name?: string
-    store?: string
-    category?: string
-    sort_by?: string
-    page?: number
-    limit?: number
-    asc?: boolean
-  } = {
-    id: undefined,
-    name: "",
-    store: "",
-    category: "",
-    sort_by: "name",
-    page: 1,
-    limit: 20,
-    asc: true,
-  },
-) {
-  const { id, name, store, category, sort_by, page, limit, asc } = params
+export function getArticlesApiRoute(params: {
+  id?: number
+  pagination?: PaginationParams
+}) {
+  const { id, pagination } = params
+  const route = `${remote}${ApiRoutes.ARTICLES}/`
   if (id !== undefined) {
-    return `${remote}${ApiRoutes.ARTICLES}/${id}`
-  } else {
-    return `${remote}${ApiRoutes.ARTICLES}/?${new URLSearchParams({
-      name: name ?? "",
-      store: store ?? "",
-      category: category ?? "",
-      sort_by: sort_by ?? "updated_at",
-      page: page ? `${page}` : "1",
-      limit: limit ? `${limit}` : "20",
-      asc: asc ? asc.toString() : "1",
-    })}`
+    return `${route}${id}`
   }
+  if (pagination) {
+    return paginate(`${route}`, pagination)
+  }
+  return route
 }
 
-export function getStoresApiRoute(
-  params: {
-    id?: number
-    name?: string
-    sort_by?: string
-    page?: number
-    limit?: number
-    asc?: boolean
-  } = {
-    id: undefined,
-    name: "",
-    sort_by: "name",
-    page: 1,
-    limit: 20,
-    asc: true,
-  },
-) {
-  const { id, name, sort_by, page, limit, asc } = params
+export function getStoresApiRoute(params: {
+  id?: number
+  pagination?: PaginationParams
+}) {
+  const { id, pagination } = params
+  const route = `${remote}${ApiRoutes.STORES}/`
   if (id !== undefined) {
-    return `${remote}${ApiRoutes.STORES}/${id}`
-  } else {
-    return `${remote}${ApiRoutes.STORES}/?${new URLSearchParams({
-      name: name ?? "",
-      sort_by: sort_by ?? "updated_at",
-      page: page ? `${page}` : "1",
-      limit: limit ? `${limit}` : "20",
-      asc: asc ? asc.toString() : "1",
-    })}`
+    return `${route}${id}`
   }
+  if (pagination) {
+    return paginate(`${route}`, pagination)
+  }
+  return route
 }
 
-export function getCategoriesApiRoute(
-  params: {
-    id?: number
-    name?: string
-    sort_by?: string
-    page?: number
-    limit?: number
-    asc?: boolean
-  } = {
-    id: undefined,
-    name: undefined,
-    sort_by: "name",
-    page: 1,
-    limit: 20,
-    asc: true,
-  },
-) {
-  console.log(params)
-  const { id, name, sort_by, page, limit, asc } = params
+export function getCategoriesApiRoute(params: {
+  id?: number
+  pagination?: PaginationParams
+}) {
+  const { id, pagination } = params
+  const route = `${remote}${ApiRoutes.CATEGORIES}/`
   if (id !== undefined) {
-    return `${remote}${ApiRoutes.CATEGORIES}/${id}`
-  } else {
-    return `${remote}${ApiRoutes.CATEGORIES}/?${new URLSearchParams({
-      name: name as any,
-      sort_by: sort_by ?? "updated_at",
-      page: page ? `${page}` : "1",
-      limit: limit ? `${limit}` : "20",
-      asc: asc ? asc.toString() : "1",
-    })}`
+    return `${route}${id}`
   }
+  if (pagination) {
+    return paginate(`${route}`, pagination)
+  }
+  return route
+}
+
+export function getBrandsApiRoute(params: {
+  id?: number
+  pagination?: PaginationParams
+}) {
+  const { id, pagination } = params
+  const route = `${remote}${ApiRoutes.BRANDS}/`
+  if (id !== undefined) {
+    return `${route}${id}`
+  }
+  if (pagination) {
+    return paginate(`${route}`, pagination)
+  }
+  return route
 }
 
 export function getPricesApiRoute(id: number) {
   return `${remote}${ApiRoutes.ARTICLES}/${id}/prices`
+}
+
+function paginate(route: string, params: PaginationParams = undefined) {
+  if (params == undefined) {
+    return route
+  }
+  const { filter, sortBy, page, limit, asc } = params
+  const searchParams = new URLSearchParams()
+  if (filter) {
+    searchParams.append("name", filter)
+  }
+  if (sortBy) {
+    searchParams.append("sort_by", sortBy)
+  }
+  if (page > 0) {
+    searchParams.append("page", `${page}`)
+  }
+  if (limit > 0) {
+    searchParams.append("limit", `${limit}`)
+  }
+  if (asc !== undefined) {
+    searchParams.append("asc", asc ? "1" : "0")
+  }
+  return `${route}?${searchParams.toString()}`
 }

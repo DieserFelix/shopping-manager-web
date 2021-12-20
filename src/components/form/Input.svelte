@@ -32,7 +32,7 @@
     setTimeout(() => {
       blurHandler()
       focus = false
-    }, 500)
+    }, 300)
   }}
 />
 

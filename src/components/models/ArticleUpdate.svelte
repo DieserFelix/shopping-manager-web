@@ -18,7 +18,7 @@
   const update = useMutation<Article, ApiError, Partial<Omit<Article, "id">>>(
     (params) =>
       authFetch<Article>({
-        url: getArticlesApiRoute(),
+        url: getArticlesApiRoute({}),
         method: "PUT",
         token: $authToken,
         body: {

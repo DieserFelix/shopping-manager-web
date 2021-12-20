@@ -1,6 +1,12 @@
 <script lang="ts">
   import { useQuery } from "@sveltestack/svelte-query"
-  import { ApiError, authFetch, authToken, ButtonContexts } from "../../lib"
+  import {
+    ApiError,
+    authFetch,
+    authToken,
+    ButtonContexts,
+    PaginationParams,
+  } from "../../lib"
   import { Card } from "../card"
   import { ListGroup, ListGroupAction } from "../list"
 
@@ -11,11 +17,7 @@
   export let queryKey: string = undefined
   export let queryString: (params: {
     id?: number
-    name?: string
-    sort_by?: string
-    page?: number
-    limit?: number
-    asc?: boolean
+    pagination: PaginationParams
   }) => string = undefined
   export let completionHandler: (suggestion: string) => void = () => {}
 
@@ -24,9 +26,11 @@
     (p) => {
       return authFetch<Entity[]>({
         url: queryString({
-          name: p.queryKey[1] as string,
-          limit: 3,
-          sort_by: "name",
+          pagination: {
+            filter: p.queryKey[1] as string,
+            limit: 3,
+            sortBy: "name",
+          },
         }),
         method: "GET",
         token: $authToken,
@@ -38,7 +42,7 @@
   )
 
   $: suggestions = $query.isLoading ? undefined : $query.data
-  let index: number = 0
+  let index: number = -1
 
   const keyHandler = (event: KeyboardEvent) => {
     if (visible && suggestions) {
@@ -63,16 +67,22 @@
         case "ArrowRight":
           if (index != -1) {
             value = suggestions[index].name
-            index = 0
+            index = -1
             event.preventDefault()
           }
           break
+
         case "Enter":
+        case "Tab":
           if (index != -1) {
             completionHandler(suggestions[index].name)
-            index = 0
+            index = -1
             event.preventDefault()
           }
+          break
+
+        case "Escape":
+          index = -1
           break
 
         default:

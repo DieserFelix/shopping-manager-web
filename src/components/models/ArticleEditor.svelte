@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { Article, getCategoriesApiRoute, getStoresApiRoute } from "../../lib"
+  import {
+    Article,
+    getBrandsApiRoute,
+    getCategoriesApiRoute,
+    getStoresApiRoute,
+  } from "../../lib"
   import { Deletion } from "../action"
   import { CardDismissal, Subtitle, Title } from "../card"
   import { PropEdit } from "../form"
@@ -73,6 +78,24 @@
       />
     </td>
     <td>
+      <Subtitle>Brand</Subtitle>
+      <PropEdit
+        label={`${article.brand}`}
+        editHandler={(brand, onSuccess) =>
+          editHandler(
+            {
+              brand: brand,
+            },
+            onSuccess,
+          )}
+        permaEdit={permaEdit}
+        autoComplete={{
+          queryKey: "brands",
+          queryString: getBrandsApiRoute,
+        }}
+      />
+    </td>
+    <td>
       <Subtitle>Price ({article.price.currency})</Subtitle>
       <PropEdit
         label={`${article.price.price}`}
@@ -98,7 +121,7 @@
   }
 
   td {
-    width: 30%;
+    width: 24%;
     margin: 5px;
   }
 </style>

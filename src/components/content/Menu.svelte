@@ -22,9 +22,7 @@
   export let width: string = "250px"
   let menuShown: boolean = false
 
-  let token: string = ""
-  authToken.subscribe((value) => (token = value))
-  $: username = decodeToken(token).sub
+  $: username = decodeToken($authToken).sub
 
   const mutation = useMutation<void, ApiError, FetchParams>(
     (params) => authFetch<void>(params),
@@ -42,7 +40,7 @@
     $mutation.mutate({
       url: getLogoutApiRoute(),
       method: "POST",
-      token: token,
+      token: $authToken,
     })
   }
 </script>

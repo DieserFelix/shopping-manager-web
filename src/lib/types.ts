@@ -21,6 +21,7 @@ export type Article = {
   detail: string
   store: string
   category: string
+  brand: string
   price: Omit<Price, "created_at" | "article_id">
 }
 

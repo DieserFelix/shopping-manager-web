@@ -23,6 +23,7 @@
     detail: "",
     store: "",
     category: "",
+    brand: "",
     price: { price: 0, currency: "EUR" },
   }
 
@@ -31,7 +32,7 @@
   const create = useMutation<Article, ApiError, Partial<Article>>(
     (params) =>
       authFetch<Article>({
-        url: getArticlesApiRoute(),
+        url: getArticlesApiRoute({}),
         method: "POST",
         token: $authToken,
         body: params,
@@ -45,6 +46,7 @@
           detail: "",
           store: "",
           category: "",
+          brand: "",
           price: { price: 0, currency: "EUR" },
         }
         successHandler()
@@ -79,7 +81,7 @@
       type={ButtonTypes.BUTTON}
       context={ButtonContexts.TRANSPARENT}
       action={() => {
-        $create.mutate(article)
+        setTimeout(() => $create.mutate(article), 400)
       }}
     >
       <Icon>{IconNames.noteAdd}</Icon>

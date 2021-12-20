@@ -4,6 +4,7 @@
     ButtonTypes,
     IconNames,
     InputTypes,
+    PaginationParams,
     useOutsideClick,
   } from "../../lib"
   import { Button } from "../action"
@@ -17,11 +18,7 @@
     queryKey: string
     queryString: (params: {
       id?: number
-      name?: string
-      sort_by?: string
-      page?: number
-      limit?: number
-      asc?: boolean
+      pagination?: PaginationParams
     }) => string
   } = undefined
   let edit = false
