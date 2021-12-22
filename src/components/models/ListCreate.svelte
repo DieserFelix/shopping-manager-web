@@ -1,15 +1,12 @@
 <script lang="ts">
-  import { useMutation, useQueryClient } from "@sveltestack/svelte-query"
   import { ListEditor } from "."
   import {
     ApiError,
-    authFetch,
-    authToken,
     ButtonContexts,
     ButtonTypes,
-    getListsApiRoute,
     IconNames,
     ShoppingList,
+    useListCreate,
   } from "../../lib"
   import { Button } from "../action"
   import { Card, CardBody, CardFooter } from "../card"
@@ -21,28 +18,13 @@
     finalized: false,
   }
 
-  const queryClient = useQueryClient()
-
-  const create = useMutation<ShoppingList, ApiError, Partial<ShoppingList>>(
-    (params) =>
-      authFetch<ShoppingList>({
-        url: getListsApiRoute({}),
-        method: "POST",
-        token: $authToken,
-        body: params,
-      }),
-    {
-      onSuccess: () => {
-        apiError = undefined
-        queryClient.invalidateQueries("lists")
-      },
-      onError: (error) => {
-        apiError = error
-      },
-    },
-  )
-
   let apiError: ApiError
+
+  const create = useListCreate({
+    setList: (l) => (list = l),
+    setError: (error) => (apiError = error),
+  })
+
   $: errorMessage = apiError ? apiError.message : ""
 </script>
 

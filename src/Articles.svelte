@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { useInfiniteQuery } from "@sveltestack/svelte-query"
   import { navigate } from "svelte-navigator"
   import { Button, Pager } from "./components/action"
   import { Card, CardBody, Title } from "./components/card"
@@ -7,16 +6,14 @@
   import { Page } from "./components/layout"
   import { ArticleCreateCard, ArticleUpdateCard } from "./components/models"
   import {
-    ApiError,
     Article,
     ArticleColumns,
-    authFetch,
-    authToken,
     ButtonContexts,
     ButtonTypes,
     getArticlesApiRoute,
     IconNames,
     Routes,
+    usePaginatedQuery,
   } from "./lib"
 
   let filter = ""
@@ -25,28 +22,15 @@
   let page = 1
   let limit = 5
 
-  $: getArticles = useInfiniteQuery<Article[], ApiError>({
-    queryKey: ["articles", filter, sortColumn, asc],
-    queryFn: ({ pageParam = page }) => {
-      return authFetch<Article[]>({
-        url: getArticlesApiRoute({
-          pagination: {
-            filter: filter,
-            sortBy: sortColumn,
-            limit: limit,
-            asc: asc,
-            page: pageParam,
-          },
-        }),
-        method: "GET",
-        token: $authToken,
-      })
-    },
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length == limit) {
-        return allPages.length + 1
-      }
-      return undefined
+  $: getArticles = usePaginatedQuery<Article>({
+    key: "articles",
+    urlFn: getArticlesApiRoute,
+    pagination: {
+      filter: filter,
+      sortBy: sortColumn,
+      asc: asc,
+      page: page,
+      limit: limit,
     },
   })
 

@@ -1,70 +1,26 @@
 <script lang="ts">
-  import { useMutation, useQueryClient } from "@sveltestack/svelte-query"
   import { ListItemEditor } from "."
   import {
     ApiError,
-    authFetch,
-    authToken,
-    getListItemsApiRoute,
     ShoppingListItem,
+    useListItemDelete,
+    useListItemUpdate,
   } from "../../lib"
   import { Card, CardBody } from "../card"
 
   export let item: ShoppingListItem
-
-  const queryClient = useQueryClient()
-
-  const update = useMutation<
-    ShoppingListItem,
-    ApiError,
-    Partial<Omit<ShoppingListItem, "id">>
-  >(
-    (params) =>
-      authFetch<ShoppingListItem>({
-        url: getListItemsApiRoute({ listId: item.list_id }),
-        method: "PUT",
-        token: $authToken,
-        body: {
-          id: item.id,
-          ...params,
-        },
-      }),
-    {
-      onSuccess: (data) => {
-        apiError = undefined
-        queryClient.refetchQueries("list")
-        queryClient.refetchQueries("lists")
-        queryClient.refetchQueries("listItems")
-      },
-      onError: (error) => {
-        if (error.statusCode != 404) {
-          apiError = error
-        }
-        queryClient.invalidateQueries("listItems")
-      },
-    },
-  )
-
-  const remove = useMutation<void, ApiError>(
-    () =>
-      authFetch<void>({
-        url: getListItemsApiRoute({ listId: item.list_id, id: item.id }),
-        method: "DELETE",
-        token: $authToken,
-      }),
-    {
-      onSuccess: () => {
-        queryClient.refetchQueries("lists")
-        queryClient.refetchQueries("list")
-        queryClient.refetchQueries("listItems")
-      },
-      onError: (error) => {
-        apiError = error
-      },
-    },
-  )
-
   let apiError: ApiError
+
+  const update = useListItemUpdate({
+    item: item,
+    setError: (error) => (apiError = error),
+  })
+
+  const remove = useListItemDelete({
+    item: item,
+    setError: (error) => (apiError = error),
+  })
+
   $: errorMessage = apiError ? apiError.message : ""
 </script>
 

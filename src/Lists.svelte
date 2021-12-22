@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { useInfiniteQuery } from "@sveltestack/svelte-query"
   import { navigate } from "svelte-navigator"
   import { Button, Pager } from "./components/action"
   import { Card, CardBody, Title } from "./components/card"
@@ -7,9 +6,6 @@
   import { Page } from "./components/layout"
   import { ListCreateCard, ListUpdateCard } from "./components/models"
   import {
-    ApiError,
-    authFetch,
-    authToken,
     ButtonContexts,
     ButtonTypes,
     getListsApiRoute,
@@ -17,36 +13,24 @@
     ListColumns,
     Routes,
     ShoppingList,
+    usePaginatedQuery,
   } from "./lib"
 
   let filter = ""
-  let sortColumn = "updated_at"
+  let sortColumn = ListColumns["Updated at"]
   let asc = false
   let page = 1
   let limit = 10
 
-  $: getLists = useInfiniteQuery<ShoppingList[], ApiError>({
-    queryKey: ["lists", filter, sortColumn, asc],
-    queryFn: ({ pageParam = page }) => {
-      return authFetch<ShoppingList[]>({
-        url: getListsApiRoute({
-          pagination: {
-            filter: filter,
-            sortBy: sortColumn,
-            limit: limit,
-            asc: asc,
-            page: pageParam,
-          },
-        }),
-        method: "GET",
-        token: $authToken,
-      })
-    },
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length == limit) {
-        return allPages.length + 1
-      }
-      return undefined
+  $: getLists = usePaginatedQuery<ShoppingList>({
+    key: "lists",
+    urlFn: getListsApiRoute,
+    pagination: {
+      filter: filter,
+      sortBy: sortColumn,
+      asc: asc,
+      page: page,
+      limit: limit,
     },
   })
 

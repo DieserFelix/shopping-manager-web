@@ -1,13 +1,5 @@
 <script lang="ts">
-  import { useQuery } from "@sveltestack/svelte-query"
-  import {
-    ApiError,
-    Article,
-    authFetch,
-    authToken,
-    getArticlesApiRoute,
-    ShoppingListItem,
-  } from "../../lib"
+  import { getArticlesApiRoute, ShoppingListItem, useArticle } from "../../lib"
   import { Deletion } from "../action"
   import { CardDismissal, Subtitle, Title } from "../card"
   import { PropEdit } from "../form"
@@ -25,16 +17,7 @@
 
   let permaEdit = mode == "CREATE"
 
-  $: getArticle = useQuery<Article, ApiError, Article, [string, number]>(
-    ["article", item.article_id],
-    (p) => {
-      return authFetch({
-        url: getArticlesApiRoute({ id: p.queryKey[1] }),
-        method: "GET",
-        token: $authToken,
-      })
-    },
-  )
+  $: getArticle = useArticle({ articleId: item.article_id })
 
   $: article = $getArticle.isLoading ? undefined : $getArticle.data
 </script>
@@ -49,7 +32,7 @@
   <PropEdit
     label={article?.name ?? ""}
     editHandler={(article) =>
-      editHandler({ article_id: article.id ?? -1 }, () => {
+      editHandler({ article_id: article.id ?? undefined }, () => {
         if (article.id) {
           item.article_id = article.id
         }
@@ -128,7 +111,9 @@
           </div>
           =
           {Math.round(
-            (item.amount * article.price.price + Number.EPSILON) * 100,
+            (item.amount * (item.price.price ?? article.price.price) +
+              Number.EPSILON) *
+              100,
           ) / 100}
           {article.price.currency}
         </div>

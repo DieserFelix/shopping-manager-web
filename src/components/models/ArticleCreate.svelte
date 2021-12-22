@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { useMutation, useQueryClient } from "@sveltestack/svelte-query"
   import {
     ApiError,
     Article,
-    authFetch,
-    authToken,
     ButtonContexts,
     ButtonTypes,
-    getArticlesApiRoute,
     IconNames,
+    useArticleCreate,
   } from "../../lib"
   import { Button } from "../action"
   import { Card, CardBody, CardFooter } from "../card"
@@ -25,28 +22,13 @@
     price: { price: 0, currency: "EUR" },
   }
 
-  const queryClient = useQueryClient()
-
-  const create = useMutation<Article, ApiError, Partial<Article>>(
-    (params) =>
-      authFetch<Article>({
-        url: getArticlesApiRoute({}),
-        method: "POST",
-        token: $authToken,
-        body: params,
-      }),
-    {
-      onSuccess: () => {
-        apiError = undefined
-        queryClient.invalidateQueries("articles")
-      },
-      onError: (error) => {
-        apiError = error
-      },
-    },
-  )
-
   let apiError: ApiError
+
+  const create = useArticleCreate({
+    setArticle: (a) => (article = a),
+    setError: (error) => (apiError = error),
+  })
+
   $: errorMessage = apiError ? apiError.message : ""
 </script>
 

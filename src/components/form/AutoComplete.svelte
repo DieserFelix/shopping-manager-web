@@ -1,12 +1,5 @@
 <script lang="ts">
-  import { useQuery } from "@sveltestack/svelte-query"
-  import {
-    ApiError,
-    authFetch,
-    authToken,
-    ButtonContexts,
-    PaginationParams,
-  } from "../../lib"
+  import { ButtonContexts, PaginationParams, useRead } from "../../lib"
   import { Card } from "../card"
   import { ListGroup, ListGroupAction } from "../list"
 
@@ -24,25 +17,18 @@
     suggestion: any,
   ) => suggestion.name
 
-  $: query = useQuery<Entity[], ApiError>(
-    [queryKey, value],
-    (p) => {
-      return authFetch<Entity[]>({
-        url: queryString({
-          pagination: {
-            filter: p.queryKey[1] as string,
-            limit: 3,
-            sortBy: "name",
-          },
-        }),
-        method: "GET",
-        token: $authToken,
-      })
-    },
-    {
-      enabled: queryKey !== undefined,
-    },
-  )
+  $: query = useRead<Entity[], [string, string]>({
+    key: [queryKey, value],
+    urlFn: (k) =>
+      queryString({
+        pagination: {
+          filter: k[1],
+          limit: 3,
+          sortBy: "name",
+        },
+      }),
+    enabled: queryKey !== undefined,
+  })
 
   export let suggestions: Entity[] = []
   $: suggestions = $query.isLoading ? undefined : $query.data
