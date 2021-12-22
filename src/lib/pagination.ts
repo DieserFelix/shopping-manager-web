@@ -25,5 +25,8 @@ export const ListItemColumns = {
   Name: "name",
   Cost: "cost",
   Amount: "amount",
+  Store: "store",
+  Category: "category",
+  Brand: "brand",
   "Updated at": "updated_at",
 }
