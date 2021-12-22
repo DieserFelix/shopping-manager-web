@@ -14,7 +14,7 @@
     Spinner,
     Tooltip,
   } from "./components/content"
-  import { PropEdit } from "./components/form"
+  import { PropEdit, TextArea } from "./components/form"
   import { Page } from "./components/layout"
   import { ListItemCreateCard, ListItemUpdateCard } from "./components/models"
   import {
@@ -181,14 +181,12 @@
                 {IconNames.fileDownload}
               </Icon>
             </Button>
-            <Card slot="content">
+            <Card --width="500px" slot="content">
               <CardBody>
                 {#if $getMarkdown.isLoading}
                   <Spinner size="100px" />
                 {:else}
-                  <textarea style="width: 400px; height: 300px"
-                    >{$getMarkdown.data}</textarea
-                  >
+                  <TextArea value={$getMarkdown.data} />
                 {/if}
               </CardBody>
             </Card>
