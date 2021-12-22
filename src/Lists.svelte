@@ -5,31 +5,31 @@
   import { Card, CardBody, Title } from "./components/card"
   import { Icon, PaginationControls, Spinner } from "./components/content"
   import { Page } from "./components/layout"
-  import { ArticleCreateCard, ArticleUpdateCard } from "./components/models"
+  import { ListCreateCard, ListUpdateCard } from "./components/models"
   import {
     ApiError,
-    Article,
-    ArticleColumns,
     authFetch,
     authToken,
     ButtonContexts,
     ButtonTypes,
-    getArticlesApiRoute,
+    getListsApiRoute,
     IconNames,
+    ListColumns,
     Routes,
+    ShoppingList,
   } from "./lib"
 
   let filter = ""
-  let sortColumn = ArticleColumns.Name
-  let asc = true
+  let sortColumn = "updated_at"
+  let asc = false
   let page = 1
-  let limit = 5
+  let limit = 10
 
-  $: getArticles = useInfiniteQuery<Article[], ApiError>({
-    queryKey: ["articles", filter, sortColumn, asc],
+  $: getLists = useInfiniteQuery<ShoppingList[], ApiError>({
+    queryKey: ["lists", filter, sortColumn, asc],
     queryFn: ({ pageParam = page }) => {
-      return authFetch<Article[]>({
-        url: getArticlesApiRoute({
+      return authFetch<ShoppingList[]>({
+        url: getListsApiRoute({
           pagination: {
             filter: filter,
             sortBy: sortColumn,
@@ -50,10 +50,10 @@
     },
   })
 
-  $: articlePages = $getArticles.isLoading ? undefined : $getArticles.data.pages
+  $: listPages = $getLists.isLoading ? undefined : $getLists.data.pages
 </script>
 
-<Page title="Shopping Manager - Articles">
+<Page title="Shopping Manager - Shopping Lists">
   <Button
     type={ButtonTypes.BUTTON}
     context={ButtonContexts.NEUTRAL}
@@ -62,30 +62,30 @@
   >
     <Icon>{IconNames.arrowBack}</Icon>
   </Button>
-  <Title>Articles</Title>
+  <Title>Shopping Lists</Title>
   <PaginationControls
     bind:filter
     bind:sortColumn
     bind:asc
-    sortColumns={ArticleColumns}
+    sortColumns={ListColumns}
   >
-    <ArticleCreateCard />
+    <ListCreateCard />
   </PaginationControls>
-  {#if !articlePages}
+  {#if !listPages}
     <Card --width="100%">
       <CardBody><Spinner /></CardBody>
     </Card>
-  {:else if articlePages}
-    {#each articlePages as page}
-      {#each page as article (`article-${article.id}`)}
-        <ArticleUpdateCard article={article} />
+  {:else if listPages}
+    {#each listPages as page}
+      {#each page as list (`list-${list.id}`)}
+        <ListUpdateCard list={list} />
       {/each}
     {/each}
-    {#if $getArticles.hasNextPage}
+    {#if $getLists.hasNextPage}
       <Pager
         requestNextPage={() => {
-          if (!$getArticles.isLoading) {
-            $getArticles.fetchNextPage()
+          if (!$getLists.isLoading) {
+            $getLists.fetchNextPage()
           }
         }}
       />

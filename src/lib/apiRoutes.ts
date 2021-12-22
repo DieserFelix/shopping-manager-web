@@ -9,6 +9,8 @@ const enum ApiRoutes {
   STORES = "/stores",
   CATEGORIES = "/categories",
   BRANDS = "/brands",
+  LISTS = "/lists",
+  ITEMS = "/items",
 }
 
 export function getLoginApiRoute() {
@@ -25,13 +27,10 @@ export function getArticlesApiRoute(params: {
 }) {
   const { id, pagination } = params
   const route = `${remote}${ApiRoutes.ARTICLES}/`
-  if (id !== undefined) {
-    return `${route}${id}`
-  }
   if (pagination) {
     return paginate(`${route}`, pagination)
   }
-  return route
+  return `${route}${id ?? ""}`
 }
 
 export function getStoresApiRoute(params: {
@@ -81,6 +80,37 @@ export function getBrandsApiRoute(params: {
 
 export function getPricesApiRoute(id: number) {
   return `${remote}${ApiRoutes.ARTICLES}/${id}/prices`
+}
+
+export function getListsApiRoute(params: {
+  id?: number
+  pagination?: PaginationParams
+}) {
+  const { id, pagination } = params
+  const route = `${remote}${ApiRoutes.LISTS}/`
+  if (id !== undefined) {
+    return `${route}${id}`
+  }
+  if (pagination) {
+    return paginate(`${route}`, pagination)
+  }
+  return route
+}
+
+export function getListItemsApiRoute(params: {
+  listId: number
+  id?: number
+  pagination?: PaginationParams
+}) {
+  const { listId, id, pagination } = params
+  const route = `${remote}${ApiRoutes.LISTS}/${listId}${ApiRoutes.ITEMS}/`
+  if (id !== undefined) {
+    return `${route}${id}`
+  }
+  if (pagination) {
+    return paginate(`${route}`, pagination)
+  }
+  return route
 }
 
 function paginate(route: string, params: PaginationParams = undefined) {

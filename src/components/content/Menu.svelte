@@ -1,33 +1,27 @@
 <script lang="ts">
   import { useMutation } from "@sveltestack/svelte-query"
-  import { navigate } from "svelte-navigator"
-  import { Icon, Tooltip } from "."
+  import jwt_decode, { JwtPayload } from "jwt-decode"
+  import { Icon } from "."
   import {
     ApiError,
     authFetch,
     authToken,
     ButtonContexts,
     ButtonTypes,
-    decodeToken,
     errorMessage,
     FetchParams,
     getLogoutApiRoute,
     IconNames,
-    Routes,
   } from "../../lib"
   import { Button } from "../action"
-  import { Card, CardFooter } from "../card"
-  import { ListGroup, ListGroupAction } from "../list"
 
-  export let width: string = "250px"
-  let menuShown: boolean = false
-
-  $: username = decodeToken($authToken).sub
+  $: username = jwt_decode<JwtPayload>($authToken).sub
 
   const mutation = useMutation<void, ApiError, FetchParams>(
     (params) => authFetch<void>(params),
     {
       onSuccess: () => {
+        localStorage.removeItem("authToken")
         authToken.set("")
       },
       onError: (error) => {
@@ -45,61 +39,11 @@
   }
 </script>
 
-<Tooltip
-  visible={menuShown}
-  onClickOutside={() => {
-    menuShown = false
-  }}
+<Button
+  type={ButtonTypes.BUTTON}
+  context={ButtonContexts.NEUTRAL}
+  action={() => logout()}
 >
-  <Button
-    type={ButtonTypes.BUTTON}
-    context={ButtonContexts.NEUTRAL}
-    action={() => (menuShown = !menuShown)}
-  >
-    <Icon>{IconNames.menu}</Icon>
-  </Button>
-  <Card --width={width} --margin="0" slot="content">
-    <ListGroup>
-      <ListGroupAction action={() => navigate(Routes.LISTS)}>
-        Shopping Lists
-      </ListGroupAction>
-      <ListGroupAction action={() => navigate(Routes.ARTICLES)}>
-        Articles
-      </ListGroupAction>
-      <ListGroupAction action={() => navigate(Routes.STORES)}>
-        Stores
-      </ListGroupAction>
-      <ListGroupAction action={() => navigate(Routes.CATEGORIES)}>
-        Categories
-      </ListGroupAction>
-    </ListGroup>
-    <CardFooter>
-      <div class="username">
-        {username}
-      </div>
-      <div class="logout">
-        <Button
-          type={ButtonTypes.BUTTON}
-          context={ButtonContexts.NEUTRAL}
-          action={() => logout()}
-        >
-          <Icon>{IconNames.logout}</Icon>
-        </Button>
-      </div>
-    </CardFooter>
-  </Card>
-</Tooltip>
-
-<style>
-  .username {
-    position: absolute;
-    left: 5px;
-    bottom: 5px;
-  }
-
-  .logout {
-    position: absolute;
-    right: 5px;
-    bottom: 5px;
-  }
-</style>
+  <Icon>{IconNames.logout}</Icon>
+</Button>
+{username}

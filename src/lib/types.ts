@@ -41,6 +41,21 @@ export type Category = {
   id: number
   name: string
 }
+
+export type ShoppingList = {
+  id: number
+  title: string
+  finalized: boolean
+  cost: Pick<Price, "price" | "currency">
+}
+
+export type ShoppingListItem = {
+  id: number
+  list_id: number
+  article_id: number
+  amount: number
+  price: Pick<Price, "price" | "currency">
+}
 export class ApiError extends Error {
   statusCode: number
 

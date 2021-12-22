@@ -15,6 +15,7 @@
   let inputElement: HTMLInputElement
   onMount(() => {
     inputElement.focus()
+    inputElement.setSelectionRange(0, inputElement.value.length, "forward")
   })
 </script>
 

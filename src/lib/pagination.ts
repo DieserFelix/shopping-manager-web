@@ -14,3 +14,16 @@ export const ArticleColumns = {
   Brand: "brand",
   "Updated at": "updated_at",
 }
+
+export const ListColumns = {
+  Title: "title",
+  Finalized: "finalized",
+  "Updated at": "updated_at",
+}
+
+export const ListItemColumns = {
+  Name: "name",
+  Cost: "cost",
+  Amount: "amount",
+  "Updated at": "updated_at",
+}

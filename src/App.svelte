@@ -6,6 +6,8 @@
   import Dashboard from "./Dashboard.svelte"
   import Landing from "./Landing.svelte"
   import { Routes } from "./lib"
+  import List from "./List.svelte"
+  import Lists from "./Lists.svelte"
 
   const queryClient = new QueryClient()
 </script>
@@ -23,6 +25,16 @@
     <Route path={Routes.ARTICLES}>
       <PrivateRoute>
         <Articles />
+      </PrivateRoute>
+    </Route>
+    <Route path={Routes.LISTS}>
+      <PrivateRoute>
+        <Lists />
+      </PrivateRoute>
+    </Route>
+    <Route path={`${Routes.LISTS}/:id`} let:params>
+      <PrivateRoute>
+        <List listId={+params.id} />
       </PrivateRoute>
     </Route>
   </Router>

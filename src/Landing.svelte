@@ -8,7 +8,6 @@
   import { Alert } from "./components/network"
   import {
     ApiError,
-    authToken,
     ButtonContexts,
     ButtonTypes,
     Credentials,
@@ -24,7 +23,7 @@
 
   const mutation = useMutation<TokenResponse, ApiError, Credentials>(login, {
     onSuccess: (data) => {
-      authToken.set(data.access_token)
+      localStorage.setItem("authToken", data.access_token)
       navigate(Routes.DASHBOARD)
     },
     onError: (error) => {

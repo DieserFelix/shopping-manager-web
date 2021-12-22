@@ -19,7 +19,7 @@
     width: 100%;
     min-height: calc(100vh - 50px);
     display: flex;
-    flex-direction: column;
+    flex-direction: var(--flex-direction);
     justify-content: var(--justify-content);
     align-items: center;
     background: var(--bg-main);

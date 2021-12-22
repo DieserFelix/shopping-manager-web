@@ -1,36 +1,32 @@
 <script lang="ts">
   import { useMutation, useQueryClient } from "@sveltestack/svelte-query"
+  import { ListEditor } from "."
   import {
     ApiError,
-    Article,
     authFetch,
     authToken,
     ButtonContexts,
     ButtonTypes,
-    getArticlesApiRoute,
+    getListsApiRoute,
     IconNames,
+    ShoppingList,
   } from "../../lib"
   import { Button } from "../action"
   import { Card, CardBody, CardFooter } from "../card"
   import { Icon } from "../content"
-  import ArticleEditor from "./ArticleEditor.svelte"
 
-  let article: Partial<Article> = {
+  let list: Partial<ShoppingList> = {
     id: undefined,
-    name: "",
-    detail: "",
-    store: "",
-    category: "",
-    brand: "",
-    price: { price: 0, currency: "EUR" },
+    title: "",
+    finalized: false,
   }
 
   const queryClient = useQueryClient()
 
-  const create = useMutation<Article, ApiError, Partial<Article>>(
+  const create = useMutation<ShoppingList, ApiError, Partial<ShoppingList>>(
     (params) =>
-      authFetch<Article>({
-        url: getArticlesApiRoute({}),
+      authFetch<ShoppingList>({
+        url: getListsApiRoute({}),
         method: "POST",
         token: $authToken,
         body: params,
@@ -38,7 +34,7 @@
     {
       onSuccess: () => {
         apiError = undefined
-        queryClient.invalidateQueries("articles")
+        queryClient.invalidateQueries("lists")
       },
       onError: (error) => {
         apiError = error
@@ -52,12 +48,12 @@
 
 <Card --width="100%" --margin="15px">
   <CardBody>
-    <ArticleEditor
+    <ListEditor
       mode="CREATE"
-      article={article}
+      list={list}
       editHandler={(props) => {
         Object.entries(props).forEach(([prop, value]) => {
-          article[prop] = value
+          list[prop] = value
         })
       }}
       alertHandler={() => (apiError = undefined)}
@@ -69,7 +65,7 @@
       type={ButtonTypes.BUTTON}
       context={ButtonContexts.TRANSPARENT}
       action={() => {
-        setTimeout(() => $create.mutate(article), 400)
+        setTimeout(() => $create.mutate(list), 400)
       }}
     >
       <Icon>{IconNames.saveAlt}</Icon>

@@ -32,14 +32,15 @@
 <Title>
   <PropEdit
     label={article.name}
-    editHandler={(name, onSuccess) => editHandler({ name: name }, onSuccess)}
+    editHandler={(name, onSuccess) =>
+      editHandler({ name: name.value }, onSuccess)}
     permaEdit={permaEdit}
   />
 </Title>
 <PropEdit
   label={article.detail}
   editHandler={(detail, onSuccess) =>
-    editHandler({ detail: detail }, onSuccess)}
+    editHandler({ detail: detail.value }, onSuccess)}
   permaEdit={permaEdit}
 />
 <table>
@@ -51,7 +52,7 @@
         editHandler={(store, onSuccess) =>
           editHandler(
             {
-              store: store,
+              store: store.value,
             },
             onSuccess,
           )}
@@ -66,7 +67,7 @@
         editHandler={(category, onSuccess) =>
           editHandler(
             {
-              category: category,
+              category: category.value,
             },
             onSuccess,
           )}
@@ -84,7 +85,7 @@
         editHandler={(brand, onSuccess) =>
           editHandler(
             {
-              brand: brand,
+              brand: brand.value,
             },
             onSuccess,
           )}
@@ -103,7 +104,7 @@
           editHandler(
             {
               price: {
-                price: parseFloat(price),
+                price: parseFloat(price.value),
                 currency: article.price.currency,
               },
             },

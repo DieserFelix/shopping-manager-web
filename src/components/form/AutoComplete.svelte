@@ -19,7 +19,10 @@
     id?: number
     pagination: PaginationParams
   }) => string = undefined
-  export let completionHandler: (suggestion: string) => void = () => {}
+  export let completionHandler: (suggestion: Entity) => void = () => {}
+  export let suggestionFormatter: (suggestion: any) => string = (
+    suggestion: any,
+  ) => suggestion.name
 
   $: query = useQuery<Entity[], ApiError>(
     [queryKey, value],
@@ -41,6 +44,7 @@
     },
   )
 
+  export let suggestions: Entity[] = []
   $: suggestions = $query.isLoading ? undefined : $query.data
   let index: number = -1
 
@@ -75,7 +79,7 @@
         case "Enter":
         case "Tab":
           if (index != -1) {
-            completionHandler(suggestions[index].name)
+            completionHandler(suggestions[index])
             index = -1
             event.preventDefault()
           }
@@ -99,14 +103,14 @@
       {#each suggestions as suggestion}
         <ListGroupAction
           action={() => {
-            completionHandler(suggestion.name)
+            completionHandler(suggestion)
           }}
           buttonContext={ButtonContexts.AUTO_COMPLETE}
           active={index > -1
             ? suggestion.name == suggestions[index].name
             : false}
         >
-          {suggestion.name}
+          {suggestionFormatter(suggestion)}
         </ListGroupAction>
       {/each}
     </ListGroup>

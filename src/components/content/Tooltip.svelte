@@ -3,6 +3,7 @@
 
   export let visible: boolean = false
   export let placement: "left" | "top" | "right" | "bottom" = "bottom"
+  export let resizeContent: boolean = true
   export let onClickOutside: () => void = () => {}
 
   let context: HTMLDivElement = undefined
@@ -13,20 +14,27 @@
       tooltip.style.display = "block"
       const { width: contextWidth, height: contextHeight } =
         context.getBoundingClientRect()
-      const { height: tooltipHeight } = tooltip.getBoundingClientRect()
-      tooltip.style.width = contextWidth + "px"
+      const { width: tooltipWidth, height: tooltipHeight } =
+        tooltip.getBoundingClientRect()
+      let referenceWidth: number
+      if (resizeContent) {
+        referenceWidth = contextWidth
+        tooltip.style.width = contextWidth + "px"
+      } else {
+        referenceWidth = tooltipWidth
+      }
 
       switch (placement) {
         case "left":
-          tooltip.style.left = -contextWidth - 1 + "px"
+          tooltip.style.left = -referenceWidth - 1 + "px"
           tooltip.style.top = 0 + "px"
           break
         case "top":
-          tooltip.style.left = contextWidth + "px"
+          tooltip.style.left = referenceWidth + "px"
           tooltip.style.top = -tooltipHeight - 1 + "px"
           break
         case "right":
-          tooltip.style.left = contextWidth + 1 + "px"
+          tooltip.style.left = referenceWidth + 1 + "px"
           tooltip.style.top = 0 + "px"
           break
         default:

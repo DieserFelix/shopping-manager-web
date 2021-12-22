@@ -3,6 +3,8 @@ export const enum Routes {
   DASHBOARD = "/dashboard",
   LISTS = "/dashboard/lists",
   ARTICLES = "/dashboard/articles",
-  STORES = "/dashboard/stores",
-  CATEGORIES = "/dashboard/categories",
+}
+
+export function getListRoute(id: number) {
+  return `${Routes.LISTS}/${id}`
 }

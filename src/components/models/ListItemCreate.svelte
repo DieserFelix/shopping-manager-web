@@ -1,44 +1,56 @@
 <script lang="ts">
   import { useMutation, useQueryClient } from "@sveltestack/svelte-query"
+  import { ListItemEditor } from "."
   import {
     ApiError,
-    Article,
     authFetch,
     authToken,
     ButtonContexts,
     ButtonTypes,
-    getArticlesApiRoute,
+    getListItemsApiRoute,
     IconNames,
+    ShoppingList,
+    ShoppingListItem,
   } from "../../lib"
   import { Button } from "../action"
   import { Card, CardBody, CardFooter } from "../card"
   import { Icon } from "../content"
-  import ArticleEditor from "./ArticleEditor.svelte"
 
-  let article: Partial<Article> = {
+  export let list: ShoppingList
+
+  let item: Partial<ShoppingListItem> = {
     id: undefined,
-    name: "",
-    detail: "",
-    store: "",
-    category: "",
-    brand: "",
-    price: { price: 0, currency: "EUR" },
+    article_id: -1,
+    amount: 1,
+    price: undefined,
   }
 
   const queryClient = useQueryClient()
 
-  const create = useMutation<Article, ApiError, Partial<Article>>(
+  const create = useMutation<
+    ShoppingListItem,
+    ApiError,
+    Partial<ShoppingListItem>
+  >(
     (params) =>
-      authFetch<Article>({
-        url: getArticlesApiRoute({}),
+      authFetch<ShoppingListItem>({
+        url: getListItemsApiRoute({ listId: list.id }),
         method: "POST",
         token: $authToken,
         body: params,
       }),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         apiError = undefined
-        queryClient.invalidateQueries("articles")
+        item = {
+          id: undefined,
+          article_id: -1,
+          amount: 1,
+          price: undefined,
+        }
+        queryClient.refetchQueries("list")
+        queryClient.refetchQueries("lists")
+        queryClient.refetchQueries("listItems")
       },
       onError: (error) => {
         apiError = error
@@ -52,13 +64,14 @@
 
 <Card --width="100%" --margin="15px">
   <CardBody>
-    <ArticleEditor
+    <ListItemEditor
       mode="CREATE"
-      article={article}
-      editHandler={(props) => {
+      item={item}
+      editHandler={(props, onSuccess) => {
         Object.entries(props).forEach(([prop, value]) => {
-          article[prop] = value
+          item[prop] = value
         })
+        onSuccess()
       }}
       alertHandler={() => (apiError = undefined)}
       errorMessage={errorMessage}
@@ -69,7 +82,7 @@
       type={ButtonTypes.BUTTON}
       context={ButtonContexts.TRANSPARENT}
       action={() => {
-        setTimeout(() => $create.mutate(article), 400)
+        setTimeout(() => $create.mutate(item), 400)
       }}
     >
       <Icon>{IconNames.saveAlt}</Icon>
