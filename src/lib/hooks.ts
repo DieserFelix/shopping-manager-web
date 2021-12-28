@@ -8,11 +8,14 @@ import {
 import {
   ApiError,
   Article,
+  ArticlePagination,
   authFetch,
   authToken,
   getArticlesApiRoute,
   getListItemsApiRoute,
   getListsApiRoute,
+  ListPagination,
+  ListsPagination,
   PaginationParams,
   ShoppingList,
   ShoppingListItem,
@@ -437,4 +440,42 @@ export function useListItem(params: { listId: number; itemId: number }) {
     key: ["listItem", itemId],
     urlFn: (k) => getListItemsApiRoute({ listId: listId, id: k[1] }),
   })
+}
+
+function serializePagination(
+  page: string,
+  pagination: Required<PaginationParams>,
+) {
+  sessionStorage.setItem(page, JSON.stringify(pagination))
+}
+
+export function usePagination(page: string, fallback: PaginationParams) {
+  const serializedPagination = sessionStorage.getItem(page)
+  if (!serializedPagination) {
+    return {
+      ...fallback,
+      serializePagination: (pagination: Required<PaginationParams>) =>
+        serializePagination(page, pagination),
+    }
+  } else {
+    const pagination: Required<PaginationParams> =
+      JSON.parse(serializedPagination)
+    return {
+      ...pagination,
+      serializePagination: (pagination: Required<PaginationParams>) =>
+        serializePagination(page, pagination),
+    }
+  }
+}
+
+export function useArticlePagination() {
+  return usePagination("articlePagination", ArticlePagination)
+}
+
+export function useListsPagination() {
+  return usePagination("listsPagination", ListsPagination)
+}
+
+export function useListPagination(listId: number) {
+  return usePagination(`listPagination-${listId}`, ListPagination)
 }

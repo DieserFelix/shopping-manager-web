@@ -15,10 +15,26 @@ export const ArticleColumns = {
   "Updated at": "updated_at",
 }
 
+export const ArticlePagination = {
+  filter: "",
+  sortBy: ArticleColumns.Name,
+  asc: true,
+  page: 1,
+  limit: 5,
+}
+
 export const ListColumns = {
   Title: "title",
   Finalized: "finalized",
   "Updated at": "updated_at",
+}
+
+export const ListsPagination = {
+  filter: "",
+  sortBy: ListColumns.Finalized,
+  asc: true,
+  page: 1,
+  limit: 5,
 }
 
 export const ListItemColumns = {
@@ -29,4 +45,12 @@ export const ListItemColumns = {
   Category: "category",
   Brand: "brand",
   "Updated at": "updated_at",
+}
+
+export const ListPagination = {
+  filter: "",
+  sortBy: ListItemColumns["Updated at"],
+  asc: true,
+  page: 1,
+  limit: 5,
 }

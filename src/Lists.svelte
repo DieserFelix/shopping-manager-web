@@ -13,14 +13,28 @@
     ListColumns,
     Routes,
     ShoppingList,
+    useListsPagination,
     usePaginatedQuery,
   } from "./lib"
 
-  let filter = ""
-  let sortColumn = ListColumns["Updated at"]
-  let asc = false
-  let page = 1
-  let limit = 10
+  let {
+    filter,
+    sortBy: sortColumn,
+    asc,
+    page,
+    limit,
+    serializePagination,
+  } = useListsPagination()
+
+  $: {
+    serializePagination({
+      filter,
+      sortBy: sortColumn,
+      asc,
+      page,
+      limit,
+    })
+  }
 
   $: getLists = usePaginatedQuery<ShoppingList>({
     key: "lists",

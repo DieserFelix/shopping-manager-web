@@ -13,14 +13,28 @@
     getArticlesApiRoute,
     IconNames,
     Routes,
+    useArticlePagination,
     usePaginatedQuery,
   } from "./lib"
 
-  let filter = ""
-  let sortColumn = ArticleColumns.Name
-  let asc = true
-  let page = 1
-  let limit = 5
+  let {
+    filter,
+    sortBy: sortColumn,
+    asc,
+    page,
+    limit,
+    serializePagination,
+  } = useArticlePagination()
+
+  $: {
+    serializePagination({
+      filter,
+      sortBy: sortColumn,
+      asc,
+      page,
+      limit,
+    })
+  }
 
   $: getArticles = usePaginatedQuery<Article>({
     key: "articles",

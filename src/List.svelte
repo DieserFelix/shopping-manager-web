@@ -22,17 +22,31 @@
     ShoppingListItem,
     useList,
     useListExport,
+    useListPagination,
     useListUpdate,
     usePaginatedQuery,
   } from "./lib"
 
   export let listId: number
-  let filter = ""
-  let sortColumn = "updated_at"
-  let asc = false
-  let page = 1
-  let limit = 10
   let showMarkdown = false
+  let {
+    filter,
+    sortBy: sortColumn,
+    asc,
+    page,
+    limit,
+    serializePagination,
+  } = useListPagination(listId)
+
+  $: {
+    serializePagination({
+      filter,
+      sortBy: sortColumn,
+      asc,
+      page,
+      limit,
+    })
+  }
 
   const update = useListUpdate({ listId: listId })
 
